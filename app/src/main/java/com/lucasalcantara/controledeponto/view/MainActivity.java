@@ -47,8 +47,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                carregarLayoutEditarEntrada();
             }
         });
 
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         productsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                loadProdutcLayout();
+                carregarLayoutEditarEntrada();
             }
         });
 
@@ -158,8 +157,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void loadProdutcLayout() {
-        /*Intent intent = new Intent(this, ProductActivity.class);
-        startActivity(intent);*/
+    private void carregarLayoutEditarEntrada() {
+        Intent intent = new Intent(this, EditarEntradaActivity.class);
+        startActivity(intent);
     }
 }
