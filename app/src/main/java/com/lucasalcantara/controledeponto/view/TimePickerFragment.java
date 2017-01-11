@@ -14,20 +14,22 @@ import java.util.Calendar;
 /**
  * Created by Lucas on 05/01/2017.
  */
-public class TimePickerFragment extends DialogFragment
-        implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerFragment extends DialogFragment {
 
-    private OnCompleteListener mListener;
+    private Activity mActivity;
+    private TimePickerDialog.OnTimeSetListener mListener;
 
-    // make sure the Activity implemented it
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        mActivity = activity;
+
+        // This error will remind you to implement an OnTimeSetListener
+        //   in your Activity if you forget
         try {
-            this.mListener = (OnCompleteListener)activity;
-        }
-        catch (final ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnCompleteListener");
+            mListener = (TimePickerDialog.OnTimeSetListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnTimeSetListener");
         }
     }
 
@@ -39,13 +41,7 @@ public class TimePickerFragment extends DialogFragment
         int minute = c.get(Calendar.MINUTE);
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), this, hour, minute,
-                DateFormat.is24HourFormat(getActivity()));
-    }
-
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        // Do something with the time chosen by the user
-        String time = Integer.toString(hourOfDay) + " : " + Integer.toString(minute);
-        this.mListener.onComplete(time);
+        return new TimePickerDialog(mActivity, mListener, hour, minute,
+                DateFormat.is24HourFormat(mActivity));
     }
 }

@@ -1,22 +1,18 @@
 package com.lucasalcantara.controledeponto.view;
 
-import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.lucasalcantara.controledeponto.R;
 
-import java.util.Calendar;
+import java.text.DecimalFormat;
 
-public class EditarEntradaActivity extends AppCompatActivity  implements OnCompleteListener {
+public class EditarEntradaActivity extends AppCompatActivity  implements TimePickerDialog.OnTimeSetListener {
     TextView horaTextView = null;
 
     @Override
@@ -31,8 +27,6 @@ public class EditarEntradaActivity extends AppCompatActivity  implements OnCompl
                 mostrarTimePickerDialog(v);
             }
         });
-
-
     }
 
     public void mostrarTimePickerDialog(View v) {
@@ -40,9 +34,10 @@ public class EditarEntradaActivity extends AppCompatActivity  implements OnCompl
         fragmento.show(getSupportFragmentManager(), "timePicker");
     }
 
-    public void onComplete(String time) {
-        // After the dialog fragment completes, it calls this callback.
-        // use the string here
-        String teste = time;
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        DecimalFormat df = new DecimalFormat("00");
+        String hora = String.valueOf(df.format(hourOfDay)) + ":" + String.valueOf(df.format(minute));
+        horaTextView.setText(hora);
     }
 }
