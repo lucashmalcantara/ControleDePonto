@@ -34,11 +34,19 @@ public class DatePickerFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
+        int dia, mes, ano;
 
-        return new DatePickerDialog(mActivity,mListener, year, month, day);
+        if (getArguments().isEmpty() == false) {
+            dia = Integer.parseInt(getArguments().getString("dia"));
+            mes = Integer.parseInt(getArguments().getString("mes"));
+            ano = Integer.parseInt(getArguments().getString("ano"));
+        } else {
+            final Calendar c = Calendar.getInstance();
+            ano = c.get(Calendar.YEAR);
+            mes = c.get(Calendar.MONTH);
+            dia = c.get(Calendar.DAY_OF_MONTH);
+        }
+
+        return new DatePickerDialog(mActivity, mListener, ano, mes, dia);
     }
 }

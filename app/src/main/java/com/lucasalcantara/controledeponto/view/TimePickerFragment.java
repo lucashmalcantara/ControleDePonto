@@ -35,13 +35,20 @@ public class TimePickerFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Pega a data atual.
-        final Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
+        int hora, minuto;
+
+        if (getArguments().isEmpty() == false) {
+            hora = Integer.parseInt(getArguments().getString("hora"));
+            minuto = Integer.parseInt(getArguments().getString("minuto"));
+        } else {
+            // Pega a data atual.
+            final Calendar c = Calendar.getInstance();
+            hora = c.get(Calendar.HOUR_OF_DAY);
+            minuto = c.get(Calendar.MINUTE);
+        }
 
         // Cria uma instância do TimePickerDialog e retorna.
-        return new TimePickerDialog(mActivity, mListener, hour, minute,
+        return new TimePickerDialog(mActivity, mListener, hora, minuto,
                 DateFormat.is24HourFormat(mActivity));
     }
 }
