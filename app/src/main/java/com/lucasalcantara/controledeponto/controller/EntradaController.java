@@ -3,6 +3,7 @@ package com.lucasalcantara.controledeponto.controller;
 import com.lucasalcantara.controledeponto.dbutils.ControleDePontoDBOpenHelper;
 import com.lucasalcantara.controledeponto.model.Entrada;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by Lucas on 18/12/2016.
  */
-public class EntradaController {
+public class EntradaController implements Serializable {
 
     public enum ERRO {
         SUCESSO,

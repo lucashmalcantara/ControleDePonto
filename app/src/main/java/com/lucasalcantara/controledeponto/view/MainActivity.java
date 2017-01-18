@@ -1,10 +1,8 @@
 package com.lucasalcantara.controledeponto.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,29 +14,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.lucasalcantara.controledeponto.R;
 import com.lucasalcantara.controledeponto.adapter.EntradaAdapter;
 import com.lucasalcantara.controledeponto.controller.EntradaController;
 import com.lucasalcantara.controledeponto.dbutils.ControleDePontoDBOpenHelper;
-import com.lucasalcantara.controledeponto.dbutils.ConversaoData;
 import com.lucasalcantara.controledeponto.model.Entrada;
 
-import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ControleDePontoDBOpenHelper dbHelper = null;
     EntradaController entradaController = null;
+    EditarEntradaFragment editarEntradaFragment = null;
+    ListaEntradaFragment listaEntradaFragment = null;
     Context contexto = null;
+
+    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +40,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                carregarLayoutEditarEntrada();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -64,48 +50,37 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         contexto = getApplicationContext();
-        dbHelper = new ControleDePontoDBOpenHelper(this);
-        entradaController = new EntradaController(dbHelper);
-      /*  try {
+        try {
             //DESCOBRIR PQ ESTÁ DANDO ERRO
             dbHelper = new ControleDePontoDBOpenHelper(this);
             entradaController = new EntradaController(dbHelper);
             if (savedInstanceState == null) {
-                expenseListFragment = new ExpenseListFragment();
-                expenseListFragment.setAtributos(expenseController, myContext);
-                newExpenseFragment = new NewExpenseFragment();
-                newExpenseFragment.setAtributos(expenseController, myContext);
+                listaEntradaFragment = new ListaEntradaFragment();
+                listaEntradaFragment.setAtributos(entradaController, contexto);
+                editarEntradaFragment = new EditarEntradaFragment();
+                editarEntradaFragment.setAtributos(entradaController, contexto);
                 // Trabalhar sempre o mais local possível, para não dar proplema. Pois depois que ele da o commit não é possivel dar outro.
                 android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
-                ft.add(R.id.layout_activity_expenses, expenseListFragment, LIST_TAG);
+                ft.add(R.id.drawer_layout, listaEntradaFragment);
                 ft.commit();
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
-        //region POPULANDO O LISTVIEW
-
-      /*  List<Entrada> products = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            products.add(new Entrada(new Date("18/12/2016 17:00:00"), "Entrada " + i));
-        }//for
-
-        ListView productsListView = (ListView) findViewById(R.id.entradasListView);
-        productsListView.setAdapter(new EntradaAdapter(this, products));
-        productsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                carregarLayoutEditarEntrada();
+            public void onClick(View view) {
+                android.support.v4.app.FragmentTransaction ft1 = fm.beginTransaction();
+                ft1.replace(R.id.drawer_layout, editarEntradaFragment);
+                ft1.addToBackStack(null);
+                ft1.commit();
             }
-        });*/
+        });
 
         exibirEntradas();
-
-        //endregion
     }
 
     @Override
@@ -165,36 +140,15 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void carregarLayoutEditarEntrada() {
-        Intent intent = new Intent(this, EditarEntradaActivity.class);
-        startActivity(intent);
-    }
-
     public void exibirEntradas() {
         try {
-          /*  List<Map<String, String>> values = new ArrayList<>();
-            List<Entrada> entradaList = entradaController.obterTodasEntradas();
-            for (Entrada e : entradaList) {
-                Map<String, String> row = new HashMap<>();
-                row.put("id", Long.toString(e.getID()));
-                row.put("horario", ConversaoData.converteDeDate(e.getHorario()));
-                row.put("descricao", e.getDescricao());
-                values.add(row);
-            }
-            if (values.size() > 0) {
-                // VERIFICAR POR QUE OS ITENS ESTÃO FICANDO EM BRANCO
-                // Classe que permite popular um ListView de forma simplificada
-                SimpleAdapter sa = new SimpleAdapter(contexto, values, R.layout.expense_row, new String[]{ "horario", "descricao"}, new int[]{ R.id.txtAmountList, R.id.txtDescList});
-                expenseLV.setAdapter(sa);
-            }*/
-
             List<Entrada> entradaList = entradaController.obterTodasEntradas();
             ListView productsListView = (ListView) findViewById(R.id.entradasListView);
             productsListView.setAdapter(new EntradaAdapter(this, entradaList));
             productsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    carregarLayoutEditarEntrada();
+                   // carregarLayoutEditarEntrada();
                 }
             });
 

@@ -8,25 +8,7 @@
     android:weightSum="1"
     tools:context="com.lucasalcantara.controledeponto.view.EditarEntradaActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="00:00"
-        android:id="@+id/horaTextView" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="00/00/0000"
-        android:id="@+id/dataTextView" />
-
-    <Button
-        android:text="Feito!"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/feitoButton" />
 
 </LinearLayout>
 

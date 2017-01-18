@@ -1,11 +1,15 @@
 package com.lucasalcantara.controledeponto.view;
 
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -18,8 +22,9 @@ import com.lucasalcantara.controledeponto.controller.EntradaController;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-public class EditarEntradaActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+public class EditarEntradaFragment extends Fragment  implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     private EntradaController entradaController = null;
+    private Context contexto = null;
 
     TextView horaTextView = null;
     TextView dataTextView = null;
@@ -28,12 +33,15 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
     int hora, minuto;
     int dia, mes, ano;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editar_entrada);
+    public EditarEntradaFragment() {
+    }
 
-        horaTextView = (TextView) findViewById(R.id.horaTextView);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_editar_entrada, container, false);
+        horaTextView = (TextView) view.findViewById(R.id.horaTextView);
         horaTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,7 +49,7 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
             }
         });
 
-        dataTextView = (TextView) findViewById(R.id.dataTextView);
+        dataTextView = (TextView) view.findViewById(R.id.dataTextView);
         dataTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +61,7 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
         preencherTextViewData(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
         preencherTextViewHora(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
-        feitoButton = (Button) findViewById(R.id.feitoButton);
+        feitoButton = (Button) view.findViewById(R.id.feitoButton);
         feitoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,8 +69,9 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
             }
         });
 
-        //entradaController = (EntradaController) getIntent().getSerializableExtra("entradaController");
+        return view;
     }
+
 
     //region Referente aos dialogs
 
@@ -73,7 +82,7 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
 
         DialogFragment fragmento = new TimePickerFragment();
         fragmento.setArguments(params);
-        fragmento.show(getSupportFragmentManager(), "timePicker");
+        fragmento.show(getFragmentManager(), "timePicker");
     }
 
     public void mostrarDatePickerDialog(View v) {
@@ -84,7 +93,7 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
 
         DialogFragment fragmento = new DatePickerFragment();
         fragmento.setArguments(params);
-        fragmento.show(getSupportFragmentManager(), "datePicker");
+        fragmento.show(getFragmentManager(), "datePicker");
     }
 
     @Override
@@ -130,27 +139,28 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            String mag = "";
+            String msg = "";
             switch (retval) {
                 case SUCESSO:
-                    mag = "Entrada incluida com sucesso.";
+                    msg = "Entrada incluida com sucesso.";
                     break;
                 case VALOR_DE_HORARIO_INVALIDO:
-                    mag = "Horario invalido.";
+                    msg = "Horario invalido.";
                     break;
                 case ERRO_INTERNO:
-                    mag = "Erro interno.";
+                    msg = "Erro interno.";
                     break;
             }
 
             // Exibe uma mensagem na tela
-            Toast t = Toast.makeText(this, mag, Toast.LENGTH_LONG);
+            Toast t = Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG);
             t.show();
             //  expenseListFragment.showExpenses();
         }
     }
 
-    public void setAtributos(EntradaController entradaController) {
+    public void setAtributos(EntradaController entradaController, Context contexto) {
         this.entradaController = entradaController;
+        this.contexto = contexto;
     }
 }
