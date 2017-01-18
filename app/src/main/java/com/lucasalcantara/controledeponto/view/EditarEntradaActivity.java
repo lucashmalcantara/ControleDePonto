@@ -10,13 +10,17 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.lucasalcantara.controledeponto.R;
+import com.lucasalcantara.controledeponto.controller.EntradaController;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
 public class EditarEntradaActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+    private EntradaController entradaController = null;
+
     TextView horaTextView = null;
     TextView dataTextView = null;
     Button feitoButton = null;
@@ -112,8 +116,35 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
         horaTextView.setText(horario);
     }
 
-
     private void salvarEntrada() {
+        EntradaController.ERRO retval = EntradaController.ERRO.ERRO_INTERNO;
 
+        try {
+            retval = entradaController.inserirEntrada("","");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            String mag = "";
+            switch (retval) {
+                case SUCESSO:
+                    mag = "Entrada incluida com sucesso.";
+                    break;
+                case VALOR_DE_HORARIO_INVALIDO:
+                    mag = "Horario invalido.";
+                    break;
+                case ERRO_INTERNO:
+                    mag = "Erro interno.";
+                    break;
+            }
+
+            // Exibe uma mensagem na tela
+            Toast t = Toast.makeText(this, mag, Toast.LENGTH_LONG);
+            t.show();
+            //  expenseListFragment.showExpenses();
+        }
+    }
+
+    public void setAtributos(EntradaController entradaController) {
+        this.entradaController = entradaController;
     }
 }

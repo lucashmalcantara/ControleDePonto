@@ -20,8 +20,9 @@ public class EntradaController {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private ControleDePontoDBOpenHelper dbHelper = null;
+
     // Se der errado retornamos um erro interno. Não se sabe o que pode dar erro, talvez um acesso ao banco ou algo do tipo.
-    public ERRO insertExpense(String txtHorario, String txtDesc) throws Exception{
+    public ERRO inserirEntrada(String txtHorario, String txtDesc) throws Exception{
         Date horario = null;
         String descricao = null;
 
@@ -48,7 +49,7 @@ public class EntradaController {
         return retval;
     }
 
-    public ERRO removeExpense(long id) throws Exception{
+    public ERRO excluirEntrada(long id) throws Exception{
         try{
             dbHelper.getExpenseDAO().deleteEntrada(id);
         }catch (Exception e){
@@ -57,7 +58,7 @@ public class EntradaController {
         return ERRO.SUCESSO;
     }
 
-    public List<Entrada> getAllExpenses() throws Exception{
+    public List<Entrada> obterTodasEntradas() throws Exception{
         return dbHelper.getExpenseDAO().getAllEntradas();
     }
 
