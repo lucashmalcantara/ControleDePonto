@@ -4,18 +4,17 @@ package com.lucasalcantara.controledeponto.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.lucasalcantara.controledeponto.R;
 import com.lucasalcantara.controledeponto.adapter.EntradaAdapter;
 import com.lucasalcantara.controledeponto.controller.EntradaController;
 import com.lucasalcantara.controledeponto.model.Entrada;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,9 +22,10 @@ import java.util.List;
  */
 public class ListaEntradaFragment extends Fragment {
 
-    private EntradaController entradaController = null;
-    private Context contexto = null;
-    ListView entradasListView = null;
+    private EntradaController mEntradaController = null;
+    private Context mContexto = null;
+    private RecyclerView mEntradaRecyclerView;
+    private List<Entrada> mEntradaList = null;
 
     public ListaEntradaFragment() {
     }
@@ -37,8 +37,48 @@ public class ListaEntradaFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_lista_entrada, container, false);
 
-        // Obtendo referencia ao elemento ListView
-        entradasListView = (ListView) view.findViewById(R.id.entradasListView);
+        mEntradaRecyclerView = (RecyclerView) view.findViewById(R.id.rv_lista_entradas);
+        // Com isso o tamanho do RecyclerView não muda.
+        mEntradaRecyclerView.setHasFixedSize(true);
+        mEntradaRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+              /*  LinearLayoutManager llm = (LinearLayoutManager) mEntradaRecyclerView.getLayoutManager();
+                EntradaAdapter mAdapter = (EntradaAdapter) mEntradaRecyclerView.getAdapter();
+
+                // Se a posição for igual, significa que estou exibindo o ultimo item, então
+                // quero exibir mais alguns itens.
+                if (mEntradaList.size() == llm.findLastCompletelyVisibleItemPosition() + 1){
+                     List<Entrada> listAux = null; // Aqui é onde devemos adicionar mais entradas...
+
+                    for (int i = 0; i < listAux.size(); i++) {
+                        mAdapter.addListItem(listAux.get(i), mEntradaList.size());
+                    }
+                }*/
+            }
+        });
+
+
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mEntradaRecyclerView.setLayoutManager(llm);
+
+        try {
+            mEntradaList = mEntradaController.obterTodasEntradas();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        EntradaAdapter mAdapter = new EntradaAdapter(getActivity(), mEntradaList);
+        mEntradaRecyclerView.setAdapter(mAdapter);
+
         return view;
     }
 
@@ -49,13 +89,13 @@ public class ListaEntradaFragment extends Fragment {
     }
 
     public void setAtributos(EntradaController entradaController, Context contexto) {
-        this.entradaController = entradaController;
-        this.contexto = contexto;
+        this.mEntradaController = entradaController;
+        this.mContexto = contexto;
     }
 
     private void exibirEntradas() {
 
-        List<Entrada> entradas = null;
+   /*     List<Entrada> entradas = null;
         try {
             entradas = entradaController.obterTodasEntradas();
             entradasListView = (ListView) getActivity().findViewById(R.id.entradasListView);
@@ -68,6 +108,6 @@ public class ListaEntradaFragment extends Fragment {
             });
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

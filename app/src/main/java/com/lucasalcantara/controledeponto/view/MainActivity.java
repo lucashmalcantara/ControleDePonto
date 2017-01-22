@@ -12,16 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.lucasalcantara.controledeponto.R;
-import com.lucasalcantara.controledeponto.adapter.EntradaAdapter;
 import com.lucasalcantara.controledeponto.controller.EntradaController;
 import com.lucasalcantara.controledeponto.dbutils.ControleDePontoDBOpenHelper;
-import com.lucasalcantara.controledeponto.model.Entrada;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,12 +32,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.mToolbar);
+        mToolbar.setTitle(R.string.meus_horarios);
+        setSupportActionBar(mToolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -52,7 +47,6 @@ public class MainActivity extends AppCompatActivity
 
         contexto = getApplicationContext();
         try {
-            //DESCOBRIR PQ ESTÁ DANDO ERRO
             dbHelper = new ControleDePontoDBOpenHelper(this);
             entradaController = new EntradaController(dbHelper);
             if (savedInstanceState == null) {
@@ -60,9 +54,9 @@ public class MainActivity extends AppCompatActivity
                 listaEntradaFragment.setAtributos(entradaController, contexto);
                 editarEntradaFragment = new EditarEntradaFragment();
                 editarEntradaFragment.setAtributos(entradaController, contexto);
-                // Trabalhar sempre o mais local possível, para não dar proplema. Pois depois que ele da o commit não é possivel dar outro.
+                // Trabalhar sempre o mais local possível, para não dar proplema. Pois depois que ele da o commit não é possível dar outro.
                 android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
-                ft.add(R.id.drawer_layout, listaEntradaFragment);
+                ft.add(R.id.rl_fragment_container, listaEntradaFragment);
                 ft.commit();
             }
         } catch (Exception e) {
@@ -80,7 +74,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        exibirEntradas();
+        //exibirEntradas();
     }
 
     @Override
@@ -141,7 +135,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void exibirEntradas() {
-        try {
+        /*try {
             List<Entrada> entradaList = entradaController.obterTodasEntradas();
             ListView productsListView = (ListView) findViewById(R.id.entradasListView);
             productsListView.setAdapter(new EntradaAdapter(this, entradaList));
@@ -154,6 +148,6 @@ public class MainActivity extends AppCompatActivity
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

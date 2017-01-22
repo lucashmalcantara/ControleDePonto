@@ -12,4 +12,10 @@
     tools:context=".view.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <RelativeLayout
+        android:id="@+id/rl_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"></RelativeLayout>
 </RelativeLayout>
