@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lucasalcantara.controledeponto.R;
+import com.lucasalcantara.controledeponto.interfaces.RecyclerViewOnClickListenerHack;
 import com.lucasalcantara.controledeponto.model.Entrada;
 
 import java.text.DateFormat;
@@ -21,6 +22,7 @@ public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewH
 
     private List<Entrada> mEntradaList;
     private LayoutInflater mLayoutInflater;
+    private RecyclerViewOnClickListenerHack mRecyclerViewOnClickListenerHack;
 
     public EntradaAdapter(Context c, List<Entrada> l) {
         this.mEntradaList = l;
@@ -44,18 +46,27 @@ public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewH
     // Ele que vincula os dados da nossa lista à view, mesmo que a view esteja sendo reutilizada.
     @Override
     public void onBindViewHolder(MeuViewHolder holder, int position) {
-        DateFormat df = new SimpleDateFormat("dd/MM - 00:00");
+        DateFormat df = new SimpleDateFormat("dd/MM - HH:mm");
         holder.tvHorario.setText(df.format(mEntradaList.get(position).getHorario()));
         holder.tvDescricao.setText(mEntradaList.get(position).getDescricao());
     }
 
-    public void addListItem(Entrada e, int posicao){
+    public void setRecyclerViewOnClickListenerHack(RecyclerViewOnClickListenerHack r){
+        mRecyclerViewOnClickListenerHack = r;
+    }
+
+    public void addListItem(Entrada e, int position){
         mEntradaList.add(e);
-        notifyItemInserted(posicao);
+        notifyItemInserted(position);
+    }
+
+    public void removeListItem(int position){
+        mEntradaList.remove(position);
+        notifyItemRemoved(position);
     }
 
     // Trabalha chache. Guarda a view para ser reutilizada.
-    public class MeuViewHolder extends RecyclerView.ViewHolder {
+    public class MeuViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
         public TextView tvHorario;
         public TextView tvDescricao;
 
@@ -64,6 +75,15 @@ public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewH
 
             tvHorario = (TextView) itemView.findViewById(R.id.tv_horario);
             tvDescricao = (TextView) itemView.findViewById(R.id.tv_descricao);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(mRecyclerViewOnClickListenerHack != null){
+                mRecyclerViewOnClickListenerHack.onClickListener(v, getAdapterPosition());
+            }
         }
     }
 }

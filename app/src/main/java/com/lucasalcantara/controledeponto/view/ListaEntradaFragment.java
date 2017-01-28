@@ -6,13 +6,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.lucasalcantara.controledeponto.R;
 import com.lucasalcantara.controledeponto.adapter.EntradaAdapter;
 import com.lucasalcantara.controledeponto.controller.EntradaController;
+import com.lucasalcantara.controledeponto.interfaces.RecyclerViewOnClickListenerHack;
 import com.lucasalcantara.controledeponto.model.Entrada;
 
 import java.util.List;
@@ -20,7 +24,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListaEntradaFragment extends Fragment {
+public class ListaEntradaFragment extends Fragment implements RecyclerViewOnClickListenerHack {
 
     private EntradaController mEntradaController = null;
     private Context mContexto = null;
@@ -64,7 +68,7 @@ public class ListaEntradaFragment extends Fragment {
                 }*/
             }
         });
-
+        mEntradaRecyclerView.addOnItemTouchListener(new ReclyclerViewOnTouchListener(getActivity(), mEntradaRecyclerView, this));
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -77,6 +81,8 @@ public class ListaEntradaFragment extends Fragment {
         }
 
         EntradaAdapter mAdapter = new EntradaAdapter(getActivity(), mEntradaList);
+        // "This" porque é o nosso fragment que está implementando RecyclerViewOnClickListenerHack.
+        //mAdapter.setRecyclerViewOnClickListenerHack(this);
         mEntradaRecyclerView.setAdapter(mAdapter);
 
         return view;
@@ -109,5 +115,76 @@ public class ListaEntradaFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }*/
+    }
+
+    @Override
+    public void onClickListener(View view, int position) {
+        Toast.makeText(getActivity(), "onClickListener()\nPosição do item: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLongPressClickListener(View view, int position) {
+        Toast.makeText(getActivity(), "onLongPressClickListener()\nPosição do item: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    public static class ReclyclerViewOnTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private Context mContext;
+        private GestureDetector mGestureDetector;
+        private RecyclerViewOnClickListenerHack mRecyclerViewOnClickListenerHack;
+
+        public ReclyclerViewOnTouchListener(Context context, final RecyclerView rv, RecyclerViewOnClickListenerHack reclyclerViewOnTouchListener) {
+            mContext = context;
+            mRecyclerViewOnClickListenerHack = reclyclerViewOnTouchListener;
+            mGestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    super.onLongPress(e);
+
+                    View childView = rv.findChildViewUnder(e.getX(), e.getY());
+
+                    if (childView != null && mRecyclerViewOnClickListenerHack != null){
+                        mRecyclerViewOnClickListenerHack.onLongPressClickListener(childView,
+                                rv.getChildAdapterPosition(childView));
+                        // [OLHAR] PODE SER QUE DÊ ERRO AQUI /\
+                    }
+                }
+
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    View childView = rv.findChildViewUnder(e.getX(), e.getY());
+
+                    if (childView != null && mRecyclerViewOnClickListenerHack != null){
+                        mRecyclerViewOnClickListenerHack.onClickListener(childView,
+                                rv.getChildAdapterPosition(childView));
+                        // [OLHAR] PODE SER QUE DÊ ERRO AQUI /\
+                    }
+                    // Quando colocamos como true, significa que interceptamos.
+                    // Significa que trabalhamos com o evento que ocorreu.
+                    // Fala para o Android que ele não precisa fazer mais nada, pois já estamos
+                    // fazendo.
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            // Se não fizermos isto, os eventos de toque na tela não serão chamados.
+            mGestureDetector.onTouchEvent(e);
+            // Se colocarmos como true, o layout root do button "rouba" o evento do botão.
+            // É como se ao clicar no button, quem respondesse fosse o layout em que ele se encontra.
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
     }
 }
