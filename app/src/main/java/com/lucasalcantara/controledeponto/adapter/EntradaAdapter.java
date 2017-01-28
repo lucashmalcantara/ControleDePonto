@@ -2,11 +2,14 @@ package com.lucasalcantara.controledeponto.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.lucasalcantara.controledeponto.R;
 import com.lucasalcantara.controledeponto.interfaces.RecyclerViewOnClickListenerHack;
 import com.lucasalcantara.controledeponto.model.Entrada;
@@ -20,6 +23,8 @@ import java.util.List;
  */
 public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewHolder> {
 
+    private static final String TAG =  EntradaAdapter.class.getName();
+
     private List<Entrada> mEntradaList;
     private LayoutInflater mLayoutInflater;
     private RecyclerViewOnClickListenerHack mRecyclerViewOnClickListenerHack;
@@ -29,7 +34,7 @@ public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewH
         mLayoutInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-       // É chamado quando há a necessidade de criar uma nova view.
+    // É chamado quando há a necessidade de criar uma nova view.
     @Override
     public MeuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater.inflate(R.layout.entrada, parent, false);
@@ -49,24 +54,33 @@ public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewH
         DateFormat df = new SimpleDateFormat("dd/MM - HH:mm");
         holder.tvHorario.setText(df.format(mEntradaList.get(position).getHorario()));
         holder.tvDescricao.setText(mEntradaList.get(position).getDescricao());
+
+        try {
+            // Responsável pela animação da view.
+            YoYo.with(Techniques.Landing)
+                    .duration(700)
+                    .playOn(holder.itemView);
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao animar o item da view.", e);
+        }
     }
 
-    public void setRecyclerViewOnClickListenerHack(RecyclerViewOnClickListenerHack r){
+    public void setRecyclerViewOnClickListenerHack(RecyclerViewOnClickListenerHack r) {
         mRecyclerViewOnClickListenerHack = r;
     }
 
-    public void addListItem(Entrada e, int position){
+    public void addListItem(Entrada e, int position) {
         mEntradaList.add(e);
         notifyItemInserted(position);
     }
 
-    public void removeListItem(int position){
+    public void removeListItem(int position) {
         mEntradaList.remove(position);
         notifyItemRemoved(position);
     }
 
     // Trabalha chache. Guarda a view para ser reutilizada.
-    public class MeuViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
+    public class MeuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvHorario;
         public TextView tvDescricao;
 
@@ -81,7 +95,7 @@ public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewH
 
         @Override
         public void onClick(View v) {
-            if(mRecyclerViewOnClickListenerHack != null){
+            if (mRecyclerViewOnClickListenerHack != null) {
                 mRecyclerViewOnClickListenerHack.onClickListener(v, getAdapterPosition());
             }
         }
