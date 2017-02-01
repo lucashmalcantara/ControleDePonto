@@ -16,8 +16,8 @@ import com.lucasalcantara.controledeponto.dbutils.ControleDePontoDBOpenHelper;
 public class EntradaDAO {
 
     private ControleDePontoDBOpenHelper dbHelper = null;
-    private static final String ENTRADA_TBL = "expense";
-    private static final String ID_ENTRADA = "ID";
+    private static final String ENTRADA_TBL = "entry";
+    private static final String ID_ENTRADA = "_id";
     private static final String DATA_ENTRADA = "date";
     private static final String DESCRICAO_ENTRADA = "description";
     private static final String[] ALL_COLUMNS = {ID_ENTRADA, DATA_ENTRADA, DESCRICAO_ENTRADA};

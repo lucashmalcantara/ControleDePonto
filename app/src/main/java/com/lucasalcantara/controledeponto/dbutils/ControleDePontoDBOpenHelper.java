@@ -14,7 +14,7 @@ public class ControleDePontoDBOpenHelper  extends SQLiteOpenHelper{
     private SQLiteDatabase myDataBase = null;
     private Context myContext = null;
     private static final String DB_NAME = "controledeponto.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private EntradaDAO expenseDAO = null;
 
     public ControleDePontoDBOpenHelper(Context ctx) {
