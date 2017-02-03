@@ -79,6 +79,11 @@ public class EntradaAdapter extends RecyclerView.Adapter<EntradaAdapter.MeuViewH
         notifyItemRemoved(position);
     }
 
+    public void setList(List<Entrada> l){
+        mEntradaList = l;
+        notifyDataSetChanged();
+    }
+
     // Trabalha chache. Guarda a view para ser reutilizada.
     public class MeuViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvHorario;

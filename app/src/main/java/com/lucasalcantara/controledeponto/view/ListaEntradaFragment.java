@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +26,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class ListaEntradaFragment extends Fragment implements RecyclerViewOnClickListenerHack {
+    private static final String TAG =  ListaEntradaFragment.class.getName();
 
     private EntradaController mEntradaController = null;
     private Context mContexto = null;
@@ -77,7 +79,7 @@ public class ListaEntradaFragment extends Fragment implements RecyclerViewOnClic
         try {
             mEntradaList = mEntradaController.obterTodasEntradas();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao listar todas as entradas.", e);
         }
 
         EntradaAdapter mAdapter = new EntradaAdapter(getActivity(), mEntradaList);
@@ -99,22 +101,16 @@ public class ListaEntradaFragment extends Fragment implements RecyclerViewOnClic
         this.mContexto = contexto;
     }
 
-    private void exibirEntradas() {
+    public void exibirEntradas() {
 
-   /*     List<Entrada> entradas = null;
         try {
-            entradas = entradaController.obterTodasEntradas();
-            entradasListView = (ListView) getActivity().findViewById(R.id.entradasListView);
-            entradasListView.setAdapter(new EntradaAdapter(contexto, entradas));
-            entradasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //carregarLayoutEditarEntrada();
-                }
-            });
+            mEntradaList = mEntradaController.obterTodasEntradas();
         } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+            Log.e(TAG, "Erro ao listar todas as entradas.", e);
+        }
+
+        EntradaAdapter mAdapter = (EntradaAdapter) mEntradaRecyclerView.getAdapter();
+        mAdapter.setList(mEntradaList);
     }
 
     @Override

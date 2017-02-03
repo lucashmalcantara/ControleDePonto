@@ -1,6 +1,7 @@
 package com.lucasalcantara.controledeponto.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.lucasalcantara.controledeponto.dbutils.ControleDePontoDBOpenHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final int REQUISICAO_ACTIVITY_EDITAR = 1;
 
     ControleDePontoDBOpenHelper dbHelper = null;
     EntradaController entradaController = null;
@@ -67,15 +70,18 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                android.support.v4.app.FragmentTransaction ft1 = fm.beginTransaction();
-                ft1.replace(R.id.drawer_layout, editarEntradaFragment);
-                ft1.addToBackStack(null);
-                ft1.commit();
+                carregarEditarEntradaActivity();
             }
         });
 
         //exibirEntradas();
     }
+
+
+    private void carregarEditarEntradaActivity() {
+        Intent intent = new Intent(this, EditarEntradaActivity.class);
+        startActivityForResult(intent, REQUISICAO_ACTIVITY_EDITAR);
+    }// loadProdutcLayout
 
     @Override
     public void onBackPressed() {
@@ -149,5 +155,22 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }*/
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUISICAO_ACTIVITY_EDITAR) {
+            if (data != null) {
+                Bundle params = data.getExtras();
+
+                if (params != null) {
+                    if (params.getBoolean("salvou")) {
+                        listaEntradaFragment.exibirEntradas();
+                    }
+                }
+            }
+        }
     }
 }

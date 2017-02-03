@@ -2,6 +2,8 @@ package com.lucasalcantara.controledeponto.view;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,12 +16,13 @@ import android.widget.Toast;
 
 import com.lucasalcantara.controledeponto.R;
 import com.lucasalcantara.controledeponto.controller.EntradaController;
+import com.lucasalcantara.controledeponto.dbutils.ControleDePontoDBOpenHelper;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
 public class EditarEntradaActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
-    private EntradaController entradaController = null;
+    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
     TextView horaTextView = null;
     TextView dataTextView = null;
@@ -28,10 +31,24 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
     int hora, minuto;
     int dia, mes, ano;
 
+    ControleDePontoDBOpenHelper dbHelper = null;
+    EntradaController entradaController = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_entrada);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle params = intent.getExtras();
+            if (params != null) {
+                // FOI ENVIADO DADOS.
+            }
+        }
+
+        dbHelper = new ControleDePontoDBOpenHelper(this);
+        entradaController = new EntradaController(dbHelper);
 
         horaTextView = (TextView) findViewById(R.id.horaTextView);
         horaTextView.setOnClickListener(new View.OnClickListener() {
@@ -60,10 +77,7 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
                 salvarEntrada();
             }
         });
-
-        //entradaController = (EntradaController) getIntent().getSerializableExtra("entradaController");
     }
-
     //region Referente aos dialogs
 
     public void mostrarTimePickerDialog(View v) {
@@ -73,7 +87,7 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
 
         DialogFragment fragmento = new TimePickerFragment();
         fragmento.setArguments(params);
-        fragmento.show(getSupportFragmentManager(), "timePicker");
+        fragmento.show(fm, "timePicker");
     }
 
     public void mostrarDatePickerDialog(View v) {
@@ -84,7 +98,7 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
 
         DialogFragment fragmento = new DatePickerFragment();
         fragmento.setArguments(params);
-        fragmento.show(getSupportFragmentManager(), "datePicker");
+        fragmento.show(fm, "datePicker");
     }
 
     @Override
@@ -121,36 +135,37 @@ public class EditarEntradaActivity extends AppCompatActivity implements TimePick
     private void salvarEntrada() {
         DecimalFormat df = new DecimalFormat("00");
         String horario = String.valueOf(String.format("%1$s-%2$s-%3$s %4$s:%5$s:00",
-                ano , df.format(mes + 1), df.format(dia), df.format(hora), df.format(minuto)));
+                ano, df.format(mes + 1), df.format(dia), df.format(hora), df.format(minuto)));
 
         EntradaController.ERRO retval = EntradaController.ERRO.ERRO_INTERNO;
 
         try {
-            retval = entradaController.inserirEntrada(horario,"Primeiro Teste");
+            retval = entradaController.inserirEntrada(horario, "Primeiro Teste");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            String mag = "";
+            String msg = "";
             switch (retval) {
                 case SUCESSO:
-                    mag = "Entrada incluida com sucesso.";
+                    msg = "Entrada incluida com sucesso.";
                     break;
                 case VALOR_DE_HORARIO_INVALIDO:
-                    mag = "Horario invalido.";
+                    msg = "Horario invalido.";
                     break;
                 case ERRO_INTERNO:
-                    mag = "Erro interno.";
+                    msg = "Erro interno.";
                     break;
             }
 
             // Exibe uma mensagem na tela
-            Toast t = Toast.makeText(this, mag, Toast.LENGTH_LONG);
-            t.show();
+             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+            if (retval == EntradaController.ERRO.SUCESSO){
+                setResult(1, new Intent().putExtra("salvou", true));
+                finish();
+            }
+
             //  expenseListFragment.showExpenses();
         }
-    }
-
-    public void setAtributos(EntradaController entradaController) {
-        this.entradaController = entradaController;
     }
 }
