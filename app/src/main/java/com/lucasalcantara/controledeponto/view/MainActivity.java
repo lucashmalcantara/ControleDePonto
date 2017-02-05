@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void exibirEntradas() {
+
         /*try {
             List<Entrada> entradaList = entradaController.obterTodasEntradas();
             ListView productsListView = (ListView) findViewById(R.id.entradasListView);
