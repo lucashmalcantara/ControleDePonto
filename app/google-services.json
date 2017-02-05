@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "607856186993",
+    "firebase_url": "https://controle-de-ponto-d1485.firebaseio.com",
+    "project_id": "controle-de-ponto-d1485",
+    "storage_bucket": "controle-de-ponto-d1485.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607856186993:android:53d691b8e1c33d1b",
+        "android_client_info": {
+          "package_name": "com.lucasalcantara.controledeponto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607856186993-vbe7n580sk1c8863hhgnqrl98ilkhq61.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbFy8-8w68nDQLFY_ne0-E_RzvKH-qwbQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
